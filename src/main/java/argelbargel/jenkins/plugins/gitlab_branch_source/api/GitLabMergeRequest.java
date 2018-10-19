@@ -9,7 +9,7 @@ public class GitLabMergeRequest extends GitlabMergeRequest {
     @JsonProperty("force_remove_source_branch")
     private boolean removeSourceBranch;
     @JsonProperty("work_in_progress")
-    private boolean wip;
+    private Boolean wip;
     @JsonProperty("web_url")
     private String url;
 
@@ -25,7 +25,7 @@ public class GitLabMergeRequest extends GitlabMergeRequest {
         this.wip = wip;
     }
 
-    public boolean isWorkInProgress() {
+    public Boolean isWorkInProgress() {
         return wip;
     }
 

@@ -19,7 +19,7 @@
 
 	<groupId>argelbargel.jenkins.plugins</groupId>
 	<artifactId>gitlab-branch-source</artifactId>
-	<version>0.6.7</version>
+	<version>0.6.8</version>
 
 	<packaging>hpi</packaging>
 	<name>GitLab Branch Source Plugin</name>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>org.jenkins-ci.plugins</groupId>
 			<artifactId>gitlab-plugin</artifactId>
-			<version>1.5.3</version>
+			<version>1.5.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jenkins-ci.plugins</groupId>
@@ -92,7 +92,13 @@
 		<dependency>
 			<groupId>org.gitlab</groupId>
 			<artifactId>java-gitlab-api</artifactId>
-			<version>4.0.0</version>
+			<version>4.1.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>

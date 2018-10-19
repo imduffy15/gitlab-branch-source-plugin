@@ -2,6 +2,7 @@ package argelbargel.jenkins.plugins.gitlab_branch_source.api;
 
 import org.apache.commons.lang.StringUtils;
 import org.gitlab.api.GitlabAPI;
+import org.gitlab.api.http.Method;
 import org.gitlab.api.http.Query;
 import org.gitlab.api.models.GitlabBranch;
 import org.gitlab.api.models.GitlabCommit;
@@ -21,6 +22,7 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static argelbargel.jenkins.plugins.gitlab_branch_source.api.GitLabProjectSelector.VISIBLE;
@@ -104,11 +106,7 @@ public final class GitLabAPI {
     }
 
     private List<GitlabTag> getTags(Serializable nameOrId) throws GitLabAPIException {
-        try {
-            return delegate.getTags(nameOrId);
-        } catch (IOException e) {
-            throw new GitLabAPIException(e);
-        }
+        return delegate.getTags(nameOrId);
     }
 
     public GitlabTag getTag(int projectId, String tag) throws GitLabAPIException {
@@ -148,7 +146,7 @@ public final class GitLabAPI {
     }
 
     public List<GitLabProject> findProjects(String group, GitLabProjectSelector selector, GitLabProjectVisibility visibility, String searchPattern) throws GitLabAPIException {
-        LOGGER.fine("finding projects for group" + group + ", " + selector + ", " + visibility + ", " + searchPattern + "...");
+        LOGGER.fine("finding projects for group " + group + ", " + selector + ", " + visibility + ", " + searchPattern + "...");
         return findProjects(projectUrl(group, selector, visibility, searchPattern));
     }
 
@@ -186,9 +184,22 @@ public final class GitLabAPI {
 
     public List<GitlabRepositoryTree> getTree(int id, String ref, String path) throws GitLabAPIException {
         try {
-            Query query = new Query()
-                    .appendIf("path", path)
-                    .appendIf("ref", ref);
+            Query query = new Query();
+
+            Optional.ofNullable(path).ifPresent(value -> {
+                try {
+                    query.append("path", value);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            Optional.ofNullable(ref).ifPresent(value -> {
+                try {
+                    query.append("ref", value);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             query.append("per_page","10000");
             String tailUrl = GitlabProject.URL + "/" + id + "/repository" + GitlabRepositoryTree.URL + query.toString();
@@ -258,7 +269,7 @@ public final class GitLabAPI {
             }
         }
 
-        return delegate.addProjectHook(projectId, url, true, false, true, true, false);
+        return delegate.addProjectHook(projectId, url, true, false, true, false, true, false, null);
     }
 
     public boolean unregisterProjectHook(URL url, int projectId) throws GitLabAPIException {
@@ -275,7 +286,7 @@ public final class GitLabAPI {
             if (hook.getUrl().equals(url)) {
                 LOGGER.fine("un-registering project-hook for project " + projectId + ": " + url + "...");
                 String tailUrl = GitlabProject.URL + PATH_SEP + hook.getProjectId() + GitlabProjectHook.URL + PATH_SEP + hook.getId();
-                delegate.retrieve().method("DELETE").to(tailUrl, GitlabProjectHook[].class);
+                delegate.retrieve().method(Method.DELETE).to(tailUrl, GitlabProjectHook[].class);
                 return true;
             }
         }

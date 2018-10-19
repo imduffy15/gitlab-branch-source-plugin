@@ -13,9 +13,9 @@ import static java.util.Collections.singletonList;
 @SuppressWarnings({"WeakerAccess", "unused"})
 @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class SystemHook extends WebHook {
-    private static final List<String> CREATE_EVENTS = singletonList("project_create");
-    private static final List<String> REMOVE_EVENTS = singletonList("project_destroy");
-    private static final List<String> UPDATE_EVENTS = asList("user_add_to_team", "user_remove_from_team");
+    private static final List<String> CREATE_EVENTS = asList("project_create", "repository_create");
+    private static final List<String> REMOVE_EVENTS = asList("project_destroy", "repository_destroy");
+    private static final List<String> UPDATE_EVENTS = asList("user_add_to_team", "user_remove_from_team", "repository_update");
 
     private Date created;
     private Date updated;
