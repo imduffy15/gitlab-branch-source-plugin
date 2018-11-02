@@ -295,7 +295,7 @@ public final class GitLabAPI {
     }
 
     private String projectUrl(String group, GitLabProjectSelector selector, GitLabProjectVisibility visibility, String searchPattern) {
-        StringBuilder urlBuilder = new StringBuilder(GitlabGroup.URL).append(PATH_SEP).append(group).append(GitLabProject.URL).append("?membership=true");
+        StringBuilder urlBuilder = new StringBuilder(GitlabGroup.URL).append(PATH_SEP).append(group).append(GitLabProject.URL).append("?membership=false");
 
         if (!VISIBLE.equals(selector)) {
             urlBuilder.append("&").append(selector.id()).append("=true");
@@ -314,7 +314,7 @@ public final class GitLabAPI {
 
 
     private String projectUrl(GitLabProjectSelector selector, GitLabProjectVisibility visibility, String searchPattern) {
-        StringBuilder urlBuilder = new StringBuilder(GitlabProject.URL).append("?membership=true");
+        StringBuilder urlBuilder = new StringBuilder(GitlabProject.URL).append("?membership=false");
 
         if(GitLabProjectSelector.OWNED.equals(selector)) {
             urlBuilder.append("&owned=true");
